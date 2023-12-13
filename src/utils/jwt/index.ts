@@ -29,7 +29,7 @@ class JWT {
                 if (err) {
                     reject(err);
                 }
-                resolve(decoded);
+                resolve(decoded as jwt.JwtPayload);
             });
         });
     }

@@ -4,7 +4,7 @@ import UserRepository from '../../repositories/UserRepository';
 
 class Auth {
     async authenticate(
-        req: Request,
+        req: Request | any,
         res: Response,
         next: NextFunction
     ): Promise<void> {
@@ -34,7 +34,11 @@ class Auth {
     }
 
     checkRoles(...roles: string[]) {
-        return async (req: Request, res: Response, next: NextFunction) => {
+        return async (
+            req: Request | any,
+            res: Response,
+            next: NextFunction
+        ) => {
             const userdata = req.userdata;
 
             const roleUser = userdata.role?.slug;
