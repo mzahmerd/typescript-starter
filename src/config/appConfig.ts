@@ -16,8 +16,14 @@ const AppConfig = {
         password: process.env.DB_PASSWORD,
         port: parseInt(<string>process.env.DB_PORT, 10) || 5432,
         dialect: process.env.DB_DIALECT || 'postgres',
-        timezone: process.env.DB_TIMEZONE || 'Asia/Jakarta',
+        timezone: process.env.DB_TIMEZONE || 'Africa/Lagos',
         isLogging: process.env.DB_LOG === 'true'
+    },
+    vtPass: {
+        url: process.env.VTPASS_BASE_URL,
+        apiKey: process.env.VTPASS_API_KEY,
+        publicKey: process.env.VTPASS_PUBLIC_KEY,
+        secretKey: process.env.VTPASS_SECRETE_KEY
     }
 };
 
