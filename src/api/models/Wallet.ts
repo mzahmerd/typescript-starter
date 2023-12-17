@@ -39,7 +39,24 @@ export type WalletInput = Optional<
     | 'currency'
     | 'username'
 >;
-export type WalletInputUpdate = Optional<WalletAttributes, 'id' | 'user'>;
+export type WalletInputUpdate = Optional<
+    WalletAttributes,
+    | 'id'
+    | 'user'
+    | 'tier'
+    | 'email'
+    | 'balance'
+    | 'ledgerBalance'
+    | 'prevBalance'
+    | 'prevLedgerBalance'
+    | 'lockedBalance'
+    | 'prevLockedBalance'
+    | 'currency'
+    | 'username'
+    | 'accountName'
+    | 'accountNumber'
+    | 'phone'
+>;
 
 export type WalletOutput = Optional<WalletAttributes, 'user'>;
 

@@ -47,11 +47,12 @@ export default class vTPass {
             const resp = await axios.post(`${appConfig.vtPass.url}/pay`, data, {
                 headers: {
                     'api-key': `${appConfig.vtPass.apiKey}`,
-                    'secret-key': `${appConfig.vtPass.secretKey}`
+                    'secret-key': `${appConfig.vtPass.secretKey}`,
+                    'Content-Type': 'application/json'
                 }
             });
             const result = resp?.data;
-
+            // throw new Error('checking error');
             if (result.code !== '000')
                 return {
                     success: false,
@@ -77,7 +78,7 @@ export default class vTPass {
                 success: false,
                 message:
                     e?.response?.data?.message ??
-                    e?.response?.data?.message.response_description ??
+                    e?.response?.data?.message?.response_description ??
                     'Could not get info '
             };
         }

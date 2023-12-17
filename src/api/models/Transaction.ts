@@ -8,20 +8,20 @@ interface TransactionAttributes {
     user?: UserOutput | null;
     amount: number;
     charge: number;
-    channelCommision: number;
+    channelCommision?: number;
     netAmount: number;
     description: string;
-    responseMessage: string;
-    channel: string;
-    channelReference: string;
+    responseMessage?: string;
+    channel?: string;
+    channelReference?: string;
     reference: string;
     transactionType: string;
-    sessionId: string;
+    sessionId?: string;
     status: 'pending' | 'successful' | 'failed' | 'refunded';
-    statusCode: string;
-    details: string;
+    statusCode?: string;
+    details: Record<string, string | number>;
     type: 'debit' | 'credit';
-    responseData: string;
+    responseData?: string;
     createdAt?: Date;
     updatedAt?: Date;
     deletedAt?: Date;
@@ -65,7 +65,7 @@ class Transaction
     public sessionId!: string;
     public status!: 'pending' | 'successful' | 'failed' | 'refunded';
     public statusCode!: string;
-    public details!: string;
+    public details!: Record<string, string | number>;
     public type!: 'debit' | 'credit';
     public responseData!: string;
 
@@ -123,7 +123,7 @@ Transaction.init(
             allowNull: true
         },
         transactionType: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             allowNull: true
         },
         sessionId: {
@@ -139,15 +139,18 @@ Transaction.init(
             allowNull: true
         },
         details: {
-            type: DataTypes.TEXT,
+            type: DataTypes.JSON,
             allowNull: true
+            // get(this){
+            //     return JSON.parse(this.getDataValue('details'))
+            // }
         },
         type: {
             type: DataTypes.ENUM('debit', 'credit'),
             allowNull: true
         },
         responseData: {
-            type: DataTypes.TEXT,
+            type: DataTypes.JSON,
             allowNull: true
         }
     },
@@ -160,4 +163,5 @@ Transaction.init(
     }
 );
 
+// Transaction.sync({ force: true });
 export default Transaction;

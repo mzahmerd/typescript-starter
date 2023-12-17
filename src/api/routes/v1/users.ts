@@ -43,4 +43,8 @@ usersRouter
         UserController.deleteUser
     );
 
+// TODO to be remove
+usersRouter
+    .route('/:id/fund')
+    .post(Auth.authenticate, UserController.fundUserWallet);
 export default usersRouter;

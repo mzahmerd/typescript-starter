@@ -3,6 +3,9 @@ import UserService from '../services/UserService';
 import { CreateUserType, UpdateUserType } from '../types/user';
 import { STATUS } from '../../constants';
 import WalletService from '../services/WalletService';
+import { asyncHandler } from '../middlewares/handlers/async';
+import TransactionService from '../services/TransactionService';
+import { randomRef } from '../../utils/helpers';
 
 class UserController {
     async createUser(
@@ -22,21 +25,23 @@ class UserController {
         }
     }
 
-    async getUsers(
-        req: Request,
-        res: Response,
-        next: NextFunction
-    ): Promise<void> {
-        try {
-            const user = await UserService.getUsers();
-            res.status(200).send({
-                message: 'Users fetched successfully',
-                data: user
-            });
-        } catch (error) {
-            next(error);
+    getUsers = asyncHandler(
+        async (
+            req: Request,
+            res: Response,
+            next: NextFunction
+        ): Promise<void> => {
+            try {
+                const user = await UserService.getUsers();
+                res.status(200).send({
+                    message: 'Users fetched successfully',
+                    data: user
+                });
+            } catch (error) {
+                next(error);
+            }
         }
-    }
+    );
 
     async getUserDetail(
         req: Request,
@@ -113,6 +118,54 @@ class UserController {
 
             res.status(STATUS.OK).send({
                 data: user
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async fundUserWallet(
+        req: Request | any,
+        res: Response,
+        next: NextFunction
+    ): Promise<void> {
+        try {
+            const { amount } = req.body;
+            const reference = randomRef(6);
+            const user = await UserService.getUserById(req.params?.id);
+
+            if (!user.wallet) {
+                // user does not have a wallet yet
+                throw new Error('user does not have a wallet yet');
+            }
+
+            const transaction = await TransactionService.createTransaction({
+                amount: amount,
+                description: 'Wallet Fund',
+                netAmount: amount,
+                details: {},
+                charge: 0,
+                reference,
+                transactionType: 'wallet_fund',
+                status: 'pending',
+                userId: user.id,
+                type: 'credit'
+            });
+
+            const funded = await WalletService.fundWallet({
+                amount,
+                reference,
+                userId: user.id,
+                remark: 'funding wallet from void',
+                transactionType: transaction.transactionType,
+                transactionId: transaction.id
+            });
+
+            if (!funded.success) throw new Error(funded.message);
+
+            res.status(STATUS.OK).send({
+                data: transaction,
+                message: funded.message
             });
         } catch (error) {
             next(error);
