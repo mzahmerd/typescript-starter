@@ -10,7 +10,7 @@ interface IWalletRepository {
     createWallet(payload: WalletInput): Promise<WalletOutput>;
     getWallets(): Promise<WalletOutput[]>;
     getWalletDetail(walletId: number): Promise<WalletOutput | null>;
-    getWalletByUser(userId: string): Promise<WalletOutput | null>;
+    getWalletByUser(userId: number): Promise<WalletOutput | null>;
     updateWallet(
         walletId: number,
         payload: WalletInputUpdate
@@ -39,7 +39,7 @@ class WalletRepository implements IWalletRepository {
         });
     }
 
-    getWalletByUser(userId: string): Promise<WalletOutput | null> {
+    getWalletByUser(userId: number): Promise<WalletOutput | null> {
         return Wallet.findOne({
             where: {
                 userId: userId

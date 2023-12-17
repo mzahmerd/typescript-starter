@@ -1,6 +1,6 @@
 import { Model, DataTypes, Optional } from 'sequelize';
 import { db } from '../../database/config';
-import { UserOutput } from './User';
+import User, { UserOutput } from './User';
 
 interface WalletAttributes {
     id: number;
@@ -10,12 +10,12 @@ interface WalletAttributes {
     accountNumber: string;
     username?: string;
     accountName: string;
-    balance: number;
-    lockedBalance: number;
-    ledgerBalance: number;
-    prevBalance: number;
-    prevLockedBalance: number;
-    prevLedgerBalance: number;
+    balance?: number;
+    lockedBalance?: number;
+    ledgerBalance?: number;
+    prevBalance?: number;
+    prevLockedBalance?: number;
+    prevLedgerBalance?: number;
     phone: string;
     email: string;
     tier?: number;
@@ -26,7 +26,18 @@ interface WalletAttributes {
 
 export type WalletInput = Optional<
     WalletAttributes,
-    'id' | 'user' | 'tier' | 'email'
+    | 'id'
+    | 'user'
+    | 'tier'
+    | 'email'
+    | 'balance'
+    | 'ledgerBalance'
+    | 'prevBalance'
+    | 'prevLedgerBalance'
+    | 'lockedBalance'
+    | 'prevLockedBalance'
+    | 'currency'
+    | 'username'
 >;
 export type WalletInputUpdate = Optional<WalletAttributes, 'id' | 'user'>;
 
@@ -82,8 +93,9 @@ Wallet.init(
         username: {
             type: DataTypes.STRING,
             allowNull: false,
+            defaultValue: '',
             set(val: string) {
-                return this.setDataValue('username', val?.toLowerCase());
+                return this.setDataValue('username', val?.toLowerCase() ?? '');
             }
         },
         accountName: {
@@ -126,7 +138,7 @@ Wallet.init(
         },
         email: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         },
         tier: {
             type: DataTypes.INTEGER,

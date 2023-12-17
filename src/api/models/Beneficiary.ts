@@ -5,7 +5,7 @@ import {
     InferCreationAttributes,
     Model
 } from 'sequelize';
-import { db } from 'src/database/config';
+import { db } from '../../database/config';
 
 class Beneficiary extends Model<
     InferAttributes<Beneficiary>,

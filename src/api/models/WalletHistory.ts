@@ -5,7 +5,7 @@ import {
     DataTypes,
     Optional
 } from 'sequelize';
-import { db } from 'src/database/config';
+import { db } from '../../database/config';
 import { WalletOutput } from './Wallet';
 interface WalletHistoryAttributes {
     id: number;

@@ -20,6 +20,8 @@ usersRouter
         UserController.getUsers
     );
 
+usersRouter.route('/me').get(Auth.authenticate, UserController.currentUser);
+
 usersRouter
     .route('/:id')
     .get(

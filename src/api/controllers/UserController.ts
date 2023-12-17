@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import UserService from '../services/UserService';
 import { CreateUserType, UpdateUserType } from '../types/user';
+import { STATUS } from '../../constants';
+import WalletService from '../services/WalletService';
 
 class UserController {
     async createUser(
@@ -80,6 +82,37 @@ class UserController {
             await UserService.deleteUser(userId);
             res.status(200).send({
                 message: 'User deleted successfully'
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async currentUser(
+        req: Request | any,
+        res: Response,
+        next: NextFunction
+    ): Promise<void> {
+        try {
+            const user = await UserService.getUserById(req.userdata?.id);
+
+            if (!user.wallet) {
+                // create user wallet
+                const wallet = await WalletService.createWallet({
+                    userId: user.id,
+                    accountName: user.firstName + ' ' + user.lastName,
+                    accountNumber: user.phoneNumber.slice(1),
+                    currency: 'NGN',
+                    phone: user.phoneNumber,
+                    email: user.email,
+                    username: user.username
+                });
+
+                user.wallet = wallet;
+            }
+
+            res.status(STATUS.OK).send({
+                data: user
             });
         } catch (error) {
             next(error);

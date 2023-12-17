@@ -160,9 +160,4 @@ Transaction.init(
     }
 );
 
-Transaction.belongsTo(User, {
-    foreignKey: 'userId',
-    as: 'user'
-});
-
 export default Transaction;

@@ -4,13 +4,17 @@ import { UserInput, UserOutput } from '../models/User';
 import JWT from '../../utils/jwt';
 
 interface IAuthService {
-    login(payload: UserInput): Promise<string>;
+    login(payload: UserInput): Promise<{ token: string; user: UserOutput }>;
     signUp(payload: UserInput): Promise<UserOutput>;
 }
 
 class AuthService implements IAuthService {
-    async login(payload: UserInput): Promise<string> {
-        const user = await UserRepository.getUserByEmail(payload.email);
+    async login(
+        payload: UserInput
+    ): Promise<{ token: string; user: UserOutput }> {
+        const user = await UserRepository.getUserByUsername(
+            payload.username as string
+        );
 
         if (!user) {
             throw new Error('User not found');
@@ -28,14 +32,17 @@ class AuthService implements IAuthService {
             throw new Error('Invalid token');
         }
 
-        return token;
+        return { token, user };
     }
 
     async signUp(payload: UserInput): Promise<UserOutput> {
-        const user = await UserRepository.getUserByEmail(payload.email);
+        const user = await UserRepository.getUserByKey(
+            'phoneNumber',
+            payload.phoneNumber
+        );
 
         if (user) {
-            throw new Error('Email must be unique');
+            throw new Error('Phone number must be unique');
         }
 
         const hashedPassword = bcrypt.hashSync(payload.password, 5);

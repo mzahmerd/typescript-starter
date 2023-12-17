@@ -11,7 +11,7 @@ const usersRequirement = {
     getUserDetail: [param('id').isInt()],
     updateUser: [
         param('id').isInt(),
-        body('firstName').isString().isLength({ min: 1 }),
+        body('firstName').isString().optional().isLength({ min: 1 }),
         body('lastName').isString().optional({ nullable: true }),
         body('roleId').isInt().optional({ nullable: true })
     ],

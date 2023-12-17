@@ -12,7 +12,10 @@ interface IUserService {
 
 class UserService implements IUserService {
     async createUser(payload: UserInput): Promise<UserOutput> {
-        const user = await UserRepository.getUserByEmail(payload.email);
+        const user = await UserRepository.getUserByKey(
+            'phoneNumber',
+            payload.phoneNumber
+        );
 
         if (user) {
             throw new Error('Email must be unique');
@@ -25,7 +28,13 @@ class UserService implements IUserService {
             password: hashedPassword
         });
     }
-
+    async getUserById(id: number) {
+        const user = await UserRepository.getUserDetail(id);
+        if (!user) {
+            throw new Error('User not found');
+        }
+        return user;
+    }
     getUsers(): Promise<UserOutput[]> {
         return UserRepository.getUsers();
     }
